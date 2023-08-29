@@ -1,98 +1,127 @@
-// Type Alias
+class Coder {
 
-type stringOrNumber = string | number
+    secondLang!: string
 
-type stringOrNumberArray = (string | number)[]
-
-type Guitarist = {
-    name?: string,
-    active: boolean,
-    albums: (string | number)[]
-}
-
-type UserId = stringOrNumber
-
-// Literal types
-let myName: 'Dave'
-myName = "Dave"
-let userName: "Dave" | 'John' | 'Amy'
-userName = 'Amy'
-
-const add = (a: number, b: number): number => {
-    return a + b
-}
-
-const logMsg = (message: any): void => {
-    console.log(message)
-}
-
-logMsg('Hello')
-logMsg(add(2, 3))
-
-
-let subtract = function (c: number, d: number): number {
-    return c - d
-}
-
-type mathFunction = (a: number, b: number) => number
-//interface mathFunction {
-//    (a: number, b: number): number
-//} 
-
-let multiply: mathFunction = function (c, d) {
-    return c * d
-}
-
-logMsg(multiply(2, 2))
-
-//optional parameters
-
-const addAll = (a: number, b: number, c?: number): number => {
-    if (typeof c !== 'undefined') {
-        return a + b + c
+    constructor(public readonly name: string, public music: string, private age: number, protected lang: string = 'Typescript') {
+        this.name = name
+        this.music = music
+        this.age = age
+        this.lang = lang
     }
-    return a + b
-}
 
-// default param value
-const sumAll = (a: number = 10, b: number, c: number = 2): number => {
-    return a + b + c
-}
-
-logMsg(addAll(2, 3, 2))
-logMsg(addAll(2, 3))
-logMsg(sumAll(2, 3))
-logMsg(sumAll(5, 3))
-
-// Rest parameters
-const total = (a: number, ...nums: number[]): number => {
-    return a + nums.reduce((prev, curr) => prev + curr)
-}
-
-logMsg(total(10, 2, 3))
-
-const createError = (errMsg: string): never => {
-    throw new Error(errMsg)
-}
-
-const infinite = () => {
-    let i: number = 1
-
-    while (true) {
-        i++
-        if (i > 100) break
+    public getAge() {
+        return `Hello I'm ${this.age}`
     }
 }
 
-//custom type guard
-const isNumber = (value: any): boolean => {
-    return typeof value === 'number'
-        ? true : false
+const Altai = new Coder('Altai', 'Pop', 18)
+console.log(Altai.getAge())
+console.log(Altai.music)
+
+
+class WebDev extends Coder {
+    constructor(
+        public computer: string, 
+        name: string,
+        music: string,
+        age: number    
+    ) {
+        super(name, music, age)
+        this.computer = computer
+    }
+
+    public getLang() {
+        return `I write ${this.lang}`
+    }
 }
 
-// use of never type
-const numberOrString = (value: number | string): string => {
-    if (typeof value === 'string') return 'string'
-    if (isNumber(value)) return 'number'
-    return createError('This should never happen')
+const Sara = new WebDev('Mac', 'Sara', 'Lofi', 25)
+
+console.log(Sara.getLang())
+////////////////////////////////////
+
+interface Musician {
+    name: string,
+    instrument: string,
+    play(action: string): string
 }
+
+class Guitarist implements Musician {
+    name: string
+    instrument: string
+
+    constructor(
+        name: string,
+        instrument: string
+    ) {
+        this.name = name
+        this.instrument = instrument
+    }
+
+    play(action: string) {
+        return `${this.name} ${action} the ${this.instrument}`
+    }
+}
+
+const Page = new Guitarist('Jimmy', 'guitar')
+
+console.log(Page.play('strums'))
+
+///////////////////////////////
+
+class Peeps {
+    static count: number = 0
+
+    static getCount(): number {
+        return Peeps.count
+    }
+
+    public id: number
+
+    constructor(public name: string) {
+        this.name = name
+        this.id = ++Peeps.count
+    }
+}
+
+
+const John = new Peeps('John')
+const Steve = new Peeps('Steve')
+const Amy = new Peeps('Amy')
+
+
+console.log(Amy.id)
+console.log(Steve.id)
+console.log(John.id)
+console.log(Peeps.count)
+
+/////////////////////////////////////
+
+class Bands {
+    private dataState: string[]
+
+    constructor() {
+        this.dataState = []
+    }
+
+    public get data(): string[] {
+        return this.dataState
+    }
+
+    public set data(value: string[]) {
+        if (Array.isArray(value) && value.every(element => typeof element === 'string')) {
+            this.dataState = value
+            return 
+        } else {
+            throw new Error('Param is not an array of strings')
+        }
+    }
+}
+
+const myBands = new Bands()
+
+myBands.data = ['Neil Young', 'Led Zep']
+console.log(myBands.data)
+
+myBands.data = [...myBands.data, 'ZZ Top']
+console.log(myBands.data)
